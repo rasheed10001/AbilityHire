@@ -1,0 +1,622 @@
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+%} {% for category, message in messages %}
+<div class="alert alert-{{ category }}">{{ message }}</div>
+{% endfor %} {% endif %} {% endwith %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Seeker Dashboard - AbilityHire</title>
+    <style>
+            :root {
+              --light-bg: #f5f7fa;
+              --dark-bg: #1d2226;
+              --light-text: #1d2226;
+              --dark-text: #e1e9ee;
+              --highlight: #0a66c2;
+              --lang-selected: #004182;
+              --primary: #0a66c2;
+              --primary-dark: #004182;
+              --border: #e6e9ec;
+              --card-bg: #ffffff;
+              --dark-card-bg: #2d3a44;
+              --hover-bg: rgba(152, 216, 244, 0.25);
+              --global-font-size: {{ global_font_size }};
+            }
+
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+              font-size: var(--global-font-size);
+              background-color: var(--light-bg);
+              color: var(--light-text);
+              transition: background-color 0.3s, color 0.3s;
+              min-height: 100vh;
+              display: flex;
+              flex-direction: column;
+            }
+
+            .dark-mode {
+              background-color: var(--dark-bg);
+              color: var(--dark-text);
+            }
+
+            header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 0.8em 2em;
+              background-color: var(--highlight);
+              color: white;
+              font-size: 1.1em;
+              position: sticky;
+              top: 0;
+              z-index: 100;
+              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+
+            .dark-mode header {
+              background-color: var(--dark-bg);
+              border-bottom: 1px solid #333;
+            }
+
+            .logo {
+              display: flex;
+              align-items: center;
+              font-size: 1.5em;
+              font-weight: bold;
+            }
+
+            .logo img {
+              height: 36px;
+              margin-right: 10px;
+            }
+
+
+            .alert {
+          padding: 15px;
+          margin-bottom: 20px;
+          border: 1px solid transparent;
+          border-radius: 4px;
+      }
+      .alert-warning {
+          color: #8a6d3b;
+          background-color: #fcf8e3;
+          border-color: #faebcc;
+      }
+      .alert-success {
+          color: #3c763d;
+          background-color: #dff0d8;
+          border-color: #d6e9c6;
+      }
+
+            .nav-buttons button,
+            .lang-toggle button {
+              background: none;
+              border: none;
+              color: white;
+              font-size: 0.95em;
+              margin-left: 1em;
+              cursor: pointer;
+              padding: 0.5em 1em;
+              border-radius: 4px;
+              transition: background-color 0.2s;
+            }
+
+            .nav-buttons button:hover,
+            .lang-toggle button:hover {
+              background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .lang-toggle button.selected {
+              background-color: var(--lang-selected);
+            }
+
+            .emoji-toggle {
+              background: none;
+              border: none;
+              font-size: 1.3em;
+              cursor: pointer;
+              margin-left: 1em;
+              color: white;
+            }
+
+            .main-container {
+              display: flex;
+              padding: 1.5em;
+              flex: 1;
+              gap: 1.5em;
+            }
+
+            .sidebar {
+              width: 260px;
+              background-color: var(--card-bg);
+              padding: 1.5em;
+              border-radius: 8px;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+              position: sticky;
+              top: 80px;
+              height: fit-content;
+            }
+
+            .dark-mode .sidebar {
+              background-color: var(--dark-card-bg);
+            }
+
+            .profile-preview {
+              text-align: center;
+              margin-bottom: 1.5em;
+              padding-bottom: 1.5em;
+              border-bottom: 1px solid var(--border);
+            }
+
+            .dark-mode .profile-preview {
+              border-bottom-color: #444;
+            }
+
+            .profile-preview img {
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+              object-fit: cover;
+              margin-bottom: 0.8em;
+              border: 2px solid var(--highlight);
+            }
+
+            .profile-info h2 {
+              font-size: 1.1em;
+              color: var(--highlight);
+              margin-bottom: 0.3em;
+              font-weight: 600;
+            }
+
+            .profile-info p {
+              color: #666;
+              font-size: 0.85em;
+            }
+
+            .dark-mode .profile-info p {
+              color: #aaa;
+            }
+
+            .nav-links {
+              margin-top: 1em;
+            }
+
+            .nav-links a {
+              display: flex;
+              align-items: center;
+              padding: 0.7em 1em;
+              margin-bottom: 0.3em;
+              text-decoration: none;
+              color: var(--light-text);
+              border-radius: 4px;
+              transition: all 0.2s;
+              font-size: 0.95em;
+            }
+
+            .dark-mode .nav-links a {
+              color: var(--dark-text);
+            }
+
+            .nav-links a:hover {
+              background-color: var(--hover-bg);
+            }
+
+            .dark-mode .nav-links a:hover {
+              background-color: rgba(10, 102, 194, 0.2);
+            }
+
+            .nav-links a.active {
+              background-color: var(--highlight);
+              color: white;
+              font-weight: 500;
+            }
+
+            .nav-links a i {
+              margin-right: 0.8em;
+              font-size: 1.1em;
+            }
+
+            .content-area {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              gap: 1.5em;
+            }
+
+            .welcome-section {
+              background-color: var(--card-bg);
+              padding: 1.5em;
+              border-radius: 8px;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            }
+
+            .dark-mode .welcome-section {
+              background-color: var(--dark-card-bg);
+            }
+
+            .welcome-section h1 {
+              color: var(--highlight);
+              margin-bottom: 0.3em;
+              font-size: 1.5em;
+              font-weight: 600;
+            }
+
+            .welcome-section p {
+              color: #666;
+              font-size: 0.95em;
+            }
+
+            .dark-mode .welcome-section p {
+              color: #aaa;
+            }
+
+            .motivation-image {
+              margin-top: 1.5em;
+              text-align: center;
+            }
+
+            .motivation-image img {
+              max-width: 100%;
+              border-radius: 8px;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .stats-cards {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 1.5em;
+            }
+
+            .stat-card {
+              background-color: var(--card-bg);
+              padding: 1.5em;
+              border-radius: 8px;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+              text-align: center;
+            }
+
+            .dark-mode .stat-card {
+              background-color: var(--dark-card-bg);
+            }
+
+            .stat-card h3 {
+              color: var(--highlight);
+              margin-bottom: 0.5em;
+              font-size: 1em;
+              font-weight: 500;
+            }
+
+            .stat-card p {
+              font-size: 1.8em;
+              font-weight: 600;
+              color: var(--highlight);
+            }
+
+            .job-recommendations {
+              background-color: var(--card-bg);
+              padding: 1.5em;
+              border-radius: 8px;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            }
+
+            .dark-mode .job-recommendations {
+              background-color: var(--dark-card-bg);
+            }
+
+            .job-recommendations h2 {
+              color: var(--highlight);
+              margin-bottom: 1em;
+              font-size: 1.2em;
+              font-weight: 600;
+            }
+
+            .job-item {
+              padding: 1em;
+              border-bottom: 1px solid var(--border);
+              transition: background-color 0.2s;
+            }
+
+            .dark-mode .job-item {
+              border-bottom-color: #444;
+            }
+
+            .job-item:hover {
+              background-color: var(--hover-bg);
+            }
+
+            .dark-mode .job-item:hover {
+              background-color: rgba(10, 102, 194, 0.2);
+            }
+
+            .job-item:last-child {
+              border-bottom: none;
+            }
+
+            .job-item h3 {
+              color: var(--highlight);
+              margin-bottom: 0.3em;
+              font-size: 1.1em;
+              font-weight: 600;
+            }
+
+            .job-item p {
+              margin-bottom: 0.5em;
+              color: #666;
+              font-size: 0.9em;
+            }
+
+            .dark-mode .job-item p {
+              color: #aaa;
+            }
+
+            .apply-btn {
+              background-color: var(--highlight);
+              color: white;
+              border: none;
+              padding: 0.6em 1.2em;
+              border-radius: 4px;
+              cursor: pointer;
+              transition: background-color 0.2s;
+              font-size: 0.9em;
+              font-weight: 500;
+              margin-top: 0.5em;
+            }
+
+            .apply-btn:hover {
+              background-color: var(--primary-dark);
+            }
+
+            .scrolling-text {
+              position: fixed;
+              bottom: 0;
+              width: 100%;
+              white-space: nowrap;
+              overflow: hidden;
+              background-color: var(--highlight);
+              color: white;
+              font-size: 0.9em;
+              padding: 0.8em;
+              z-index: 90;
+            }
+
+            .dark-mode .scrolling-text {
+              background-color: var(--dark-card-bg);
+              border-top: 1px solid #444;
+            }
+
+            .scrolling-text span {
+              display: inline-block;
+              padding-left: 100%;
+              animation: scroll-left 20s linear infinite;
+            }
+
+            @keyframes scroll-left {
+              0% { transform: translateX(0%); }
+              100% { transform: translateX(-100%); }
+            }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="AbilityHire_Logo.png" alt="AbilityHire Logo" />
+        <span>AbilityHire</span>
+      </div>
+      <div class="nav-buttons">
+        <button onclick="navigateTo('/about')" id="aboutBtn">About</button>
+        <span class="lang-toggle">
+          <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">
+            English
+          </button>
+          <button class="lang-btn" data-lang="ar" onclick="setLanguage('ar')">
+            عربي
+          </button>
+        </span>
+        <button class="emoji-toggle" onclick="toggleMode()">🌓</button>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <div class="sidebar">
+        <div class="profile-preview">
+          <img
+            src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=800&auto=format&fit=crop"
+            alt="Profile Picture"
+            id="profileImage"
+          />
+          <div class="profile-info">
+            <h2 id="profileName"></h2>
+            <p id="profileTitle">{{ user }}</p>
+          </div>
+        </div>
+        <div class="nav-links">
+          <a href="#" class="active"
+            ><i>📊</i> <span id="dashboardLink">Dashboard</span></a
+          >
+          <a href="{{ url_for('views.searchjob') }}"
+            ><i>🔍</i> <span id="findJobsLink">Find Jobs</span></a
+          >
+          <a href="{{ url_for('views.profile') }}"
+            ><i>👤</i> <span id="profileLink">Profile</span></a
+          >
+          <a href="{{ url_for('views.setting') }}"
+            ><i>⚙️</i> <span id="settingsLink">Settings</span></a
+          >
+          <a href="{{ url_for('auth.logout') }}"
+            ><i>🚪</i> <span id="logoutLink">Logout</span></a
+          >
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div class="welcome-section">
+          <h1 id="WelcomeTitle">
+            Welcome, <span id="userFirstName">{{ user }}</span>!
+          </h1>
+          <p id="welcomeMessage">
+            Here are some great opportunities matching your profile.
+          </p>
+          <div class="motivation-image">
+            <img
+              src="https://images.unsplash.com/photo-1521791055366-0d553872125f?w=800&auto=format&fit=crop"
+              alt="Person working on laptop"
+            />
+          </div>
+        </div>
+
+        <div class="stats-cards">
+          <div class="stat-card">
+            <h3 id="Jobs Applied ToTitle">Jobs Applied To</h3>
+            <p>{{ application_count }}</p>
+          </div>
+        </div>
+
+        <div class="job-recommendations">
+          <h2 id="recommendedJobsTitle">Recommended Jobs</h2>
+          {% if recommended_jobs %} {% for job in recommended_jobs %}
+          <div class="job-item">
+            <h3>{{ job.jobtitle }}</h3>
+            <p>{{ job.city }}</p>
+            <p>Salary: {{ job.salary }} SAR</p>
+            <p>Posted: {{ job.postingdate }}</p>
+            <form
+              method="POST"
+              action="{{ url_for('views.apply_job') }}"
+              style="display: inline"
+            >
+              <input type="hidden" name="job_id" value="{{ job.jobID }}" />
+              <button type="submit" class="apply-btn">Apply Now</button>
+            </form>
+          </div>
+          {% endfor %} {% else %}
+          <p id="noJobsMessage">No recommended jobs found in your area.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="scrolling-text">
+      <span id="scrollQuotes">
+        Your abilities define you. — Focus on what you can do. — The right
+        opportunity is waiting. — Success starts here.
+      </span>
+    </div>
+
+    <script>
+      let currentLang = localStorage.getItem("abilityHireLang") || "en";
+      let currentMode = localStorage.getItem("abilityHireMode") || "light";
+
+      function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem("abilityHireLang", lang);
+        applyLanguage();
+      }
+
+      function toggleMode() {
+        document.body.classList.toggle("dark-mode");
+        currentMode = document.body.classList.contains("dark-mode")
+          ? "dark"
+          : "light";
+        localStorage.setItem("abilityHireMode", currentMode);
+      }
+
+      function navigateTo(page) {
+        window.location.href = `${page}?lang=${currentLang}&mode=${currentMode}`;
+      }
+
+      function applyLanguage() {
+        document.body.dir = currentLang === "ar" ? "rtl" : "ltr";
+        document.querySelectorAll(".lang-btn").forEach((btn) => {
+          btn.classList.toggle("selected", btn.dataset.lang === currentLang);
+        });
+
+        const translations = {
+          en: {
+            welcomeTitle: "Welcome",
+            welcomeMessage:
+              "Here are some great opportunities matching your profile.",
+            dashboardLink: "Dashboard",
+            findJobsLink: "Find Jobs",
+            profileLink: "Profile",
+            settingsLink: "Settings",
+            logoutLink: "Logout",
+            savedJobsTitle: "Saved Jobs",
+            interviewsTitle: "Interviews",
+            recommendedJobsTitle: "Recommended Jobs",
+            noJobsMessage: "No recommended jobs found in your area.",
+            company1: "Tech Solutions Inc.",
+            location1: "Amman, Jordan - Remote",
+            applyBtn1: "Apply Now",
+            company2: "Creative Minds",
+            location2: "Dubai, UAE",
+            applyBtn2: "Apply Now",
+            company3: "Inclusive Tech",
+            location3: "Remote",
+            applyBtn3: "Apply Now",
+            aboutBtn: "About",
+            scrollQuotes:
+              "Your abilities define you. — Focus on what you can do. — The right opportunity is waiting. — Success starts here.",
+          },
+          ar: {
+            welcomeTitle: "مرحبًا",
+            welcomeMessage: "إليك بعض الفرص الرائعة التي تناسب ملفك الشخصي.",
+            dashboardLink: "لوحة التحكم",
+            findJobsLink: "البحث عن وظائف",
+            profileLink: "الملف الشخصي",
+            settingsLink: "الإعدادات",
+            noJobsMessage: "لا توجد وظائف موصى بها في منطقتك.",
+            logoutLink: "تسجيل الخروج",
+            savedJobsTitle: "الوظائف المحفوظة",
+            interviewsTitle: "المقابلات",
+            recommendedJobsTitle: "وظائف موصى بها",
+            company1: "حلول التقنية",
+            location1: "عمان، الأردن - عن بُعد",
+            applyBtn1: "تقدم الآن",
+            company2: "العقول الإبداعية",
+            location2: "دبي، الإمارات",
+            applyBtn2: "تقدم الآن",
+            company3: "التقنية الشاملة",
+            location3: "عن بُعد",
+            applyBtn3: "تقدم الآن",
+            aboutBtn: "حول",
+            scrollQuotes:
+              "قدراتك تحددك. — ركز على ما يمكنك فعله. — الفرصة المناسبة تنتظرك. — النجاح يبدأ هنا.",
+          },
+        };
+
+        const t = translations[currentLang];
+        Object.keys(t).forEach((key) => {
+          const element = document.getElementById(key);
+          if (element) element.textContent = t[key];
+        });
+      }
+
+      window.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLang = urlParams.get("lang");
+        const urlMode = urlParams.get("mode");
+
+        if (urlLang) {
+          currentLang = urlLang;
+          localStorage.setItem("abilityHireLang", currentLang);
+        }
+        if (urlMode) {
+          currentMode = urlMode;
+          localStorage.setItem("abilityHireMode", currentMode);
+          if (currentMode === "dark") document.body.classList.add("dark-mode");
+        }
+
+        applyLanguage();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AbilityHire - Sign In</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --light-bg: #f4f4f4;
+      --dark-bg: #1c1c1c;
+      --light-text: #111;
+      --dark-text: #f0f0f0;
+      --highlight: #005a9c;
+      --lang-selected: #004080;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light-bg);
+      color: var(--light-text);
+      transition: background-color 0.3s, color 0.3s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5em 2em;
+      background-color: var(--highlight);
+      color: white;
+      font-size: 1.1em;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .nav-buttons button,
+    .lang-toggle button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1em;
+      margin-left: 1em;
+      cursor: pointer;
+      padding: 0.3em 0.6em;
+      border-radius: 5px;
+    }
+
+    .lang-toggle button.selected {
+      background-color: var(--lang-selected);
+    }
+
+    .emoji-toggle {
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      margin-left: 1em;
+    }
+
+    main {
+      max-width: 500px;
+      margin: 2em auto;
+      background-color: white;
+      padding: 2em;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      flex: 1;
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--highlight);
+    }
+
+    label {
+      margin-top: 1em;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.8em;
+      margin-top: 0.2em;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    .btn-container {
+      text-align: center;
+      margin-top: 2em;
+    }
+
+    .btn-container button {
+      background-color: var(--highlight);
+      color: white;
+      border: none;
+      padding: 0.8em 1.5em;
+      font-size: 1em;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 0 0.5em;
+      transition: background-color 0.3s;
+    }
+
+    .btn-container button:hover {
+      background-color: var(--lang-selected);
+    }
+
+    .motivation-section {
+      text-align: center;
+      margin-bottom: 2em;
+    }
+
+    .motivation-section img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .motivation-section p {
+      margin-top: 1em;
+      font-style: italic;
+      font-weight: bold;
+    }
+
+    .scrolling-text {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      background-color: var(--highlight);
+      color: white;
+      font-size: 1.2em;
+      padding: 0.5em;
+    }
+
+    .scrolling-text span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll-left 20s linear infinite;
+    }
+
+    @keyframes scroll-left {
+      0% { transform: translateX(0%); opacity: 1; }
+      100% { transform: translateX(-100%); opacity: 0.3; }
+    }
+
+    .dark-mode {
+      background-color: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
+    .dark-mode header {
+      background-color: #2d2d2d;
+    }
+
+    .dark-mode main {
+      background-color: #2e2e2e;
+    }
+
+    .dark-mode input {
+      background-color: #444;
+      color: white;
+      border: 1px solid #666;
+    }
+
+    .dark-mode .scrolling-text {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="AbilityHire_Logo.png" alt="Logo">
+      <span>AbilityHire</span>
+    </div>
+    <div class="nav-buttons">
+      <button onclick="navigateTo('/about')" id="aboutBtn">About</button>
+      <button onclick="navigateTo('/signup')" id="signupBtn">Sign Up</button>
+      <button onclick="navigateTo('/')" id="homeBtn">Home</button>
+      <span class="lang-toggle">
+        <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+        <button class="lang-btn" data-lang="ar" onclick="setLanguage('ar')">عربي</button>
+      </span>
+      <button class="emoji-toggle" onclick="toggleMode()">🌓</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="motivation-section">
+      <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&auto=format&fit=crop" alt="Person climbing stairs">
+      <p id="motivationText">Every step forward is progress.</p>
+    </div>
+
+    <h2 id="formTitle">Sign In</h2>
+    <form action="/login" method="POST">
+  <label id="labelEmail">Email</label>
+  <input type="email" name="email" required>
+  <label id="labelPassword">Password</label>
+  <input type="password" name="password" required>
+  <div class="btn-container">
+    <button type="submit" id="signinBtn">Sign In</button>
+    <button type="button" onclick="navigateTo('/')" id="backBtn">Back</button>
+  </div>
+</form>
+
+  </main>
+
+  <div class="scrolling-text">
+    <span id="scrollQuotes">
+      Your journey matters. — Small steps lead to big achievements. — Believe in your potential. — Opportunity awaits.
+    </span>
+  </div>
+
+  <script>
+    let currentLang = localStorage.getItem('abilityHireLang') || 'en';
+    let currentMode = localStorage.getItem('abilityHireMode') || 'light';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('abilityHireLang', lang);
+      applyLanguage();
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+      currentMode = document.body.classList.contains("dark-mode") ? "dark" : "light";
+      localStorage.setItem('abilityHireMode', currentMode);
+    }
+
+    function navigateTo(page) {
+      window.location.href = `${page}?lang=${currentLang}&mode=${currentMode}`;
+    }
+
+    function submitForm() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert(currentLang === "ar" ? "الرجاء إدخال البريد الإلكتروني وكلمة المرور." : "Please enter both email and password.");
+        return;
+      }
+
+      // In a real app, you would validate credentials here
+      window.location.href = `dashboard.html?lang=${currentLang}&mode=${currentMode}`;
+    }
+
+    function applyLanguage() {
+      document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('selected', btn.dataset.lang === currentLang);
+      });
+
+      const translations = {
+        en: {
+          formTitle: "Sign In",
+          labelEmail: "Email",
+          labelPassword: "Password",
+          signinBtn: "Sign In",
+          backBtn: "Back",
+          aboutBtn: "About",
+          signupBtn: "Sign Up",
+          homeBtn: "Home",
+          motivationText: "Every step forward is progress.",
+          scrollQuotes: "Your journey matters. — Small steps lead to big achievements. — Believe in your potential. — Opportunity awaits."
+        },
+        ar: {
+          formTitle: "تسجيل الدخول",
+          labelEmail: "البريد الإلكتروني",
+          labelPassword: "كلمة المرور",
+          signinBtn: "تسجيل الدخول",
+          backBtn: "رجوع",
+          aboutBtn: "حول",
+          signupBtn: "إنشاء حساب",
+          homeBtn: "الرئيسية",
+          motivationText: "كل خطوة للأمام هي تقدم.",
+          scrollQuotes: "رحلتك مهمة. — الخطوات الصغيرة تؤدي إلى إنجازات كبيرة. — آمن بإمكانياتك. — الفرصة تنتظر."
+        }
+      };
+
+      const t = translations[currentLang];
+      Object.keys(t).forEach(key => {
+        const element = document.getElementById(key);
+        if (element) element.textContent = t[key];
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlLang = urlParams.get('lang');
+      const urlMode = urlParams.get('mode');
+      
+      if (urlLang) {
+        currentLang = urlLang;
+        localStorage.setItem('abilityHireLang', currentLang);
+      }
+      if (urlMode) {
+        currentMode = urlMode;
+        localStorage.setItem('abilityHireMode', currentMode);
+        if (currentMode === 'dark') document.body.classList.add('dark-mode');
+      }
+      
+      applyLanguage();
+    });
+  </script>
+</body>
+</html>

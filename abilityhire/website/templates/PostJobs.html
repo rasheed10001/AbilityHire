@@ -1,0 +1,722 @@
+{% with messages = get_flashed_messages(with_categories=true) %} {% if messages
+%} {% for category, message in messages %}
+<div class="alert alert-{{ category }}">{{ message }}</div>
+{% endfor %} {% endif %} {% endwith %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post Jobs - AbilityHire</title>
+    <style>
+            :root {
+              --light-bg: #f5f7fa;
+              --dark-bg: #1d2226;
+              --light-text: #1d2226;
+              --dark-text: #e1e9ee;
+              --highlight: #0a66c2;
+              --lang-selected: #004182;
+              --primary: #0a66c2;
+              --primary-dark: #004182;
+              --border: #e6e9ec;
+              --card-bg: #ffffff;
+              --dark-card-bg: #2d3a44;
+              --hover-bg: rgba(152, 216, 244, 0.25);
+              --global-font-size: {{ global_font_size }};
+            }
+
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                Oxygen, Ubuntu, Cantarell, sans-serif;
+            }
+
+            body {
+              background-color: var(--light-bg);
+              font-size: var(--global-font-size);
+              color: var(--light-text);
+              min-height: 100vh;
+              display: flex;
+              flex-direction: column;
+              transition: background-color 0.3s, color 0.3s;
+            }
+
+            .dark-mode {
+              background-color: var(--dark-bg);
+              color: var(--dark-text);
+            }
+
+            header {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 1rem 2rem;
+              background-color: var(--highlight);
+              color: white;
+              position: sticky;
+              top: 0;
+              z-index: 100;
+            }
+
+            .dark-mode header {
+              background-color: var(--dark-bg);
+              border-bottom: 1px solid #333;
+            }
+
+            .logo {
+              display: flex;
+              align-items: center;
+              font-weight: bold;
+              font-size: 1.2rem;
+            }
+
+            .logo img {
+              height: 30px;
+              margin-right: 10px;
+            }
+
+            .nav-buttons {
+              display: flex;
+              align-items: center;
+            }
+
+            .nav-buttons button {
+              background: none;
+              border: none;
+              color: white;
+              margin-left: 1rem;
+              cursor: pointer;
+              padding: 0.5rem 1rem;
+              border-radius: 4px;
+              transition: background-color 0.2s;
+            }
+
+            .nav-buttons button:hover {
+              background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .emoji-toggle {
+              background: none;
+              border: none;
+              font-size: 1.3rem;
+              cursor: pointer;
+              margin-left: 1rem;
+              color: white;
+            }
+
+            .main-container {
+              display: flex;
+              padding: 1.5rem;
+              flex: 1;
+              gap: 1.5rem;
+            }
+
+            .sidebar {
+              width: 260px;
+              background-color: var(--card-bg);
+              padding: 1.5rem;
+              border-radius: 8px;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+              position: sticky;
+              top: 80px;
+              height: fit-content;
+            }
+
+            .dark-mode .sidebar {
+              background-color: var(--dark-card-bg);
+            }
+
+            .profile-preview {
+              text-align: center;
+              margin-bottom: 1.5rem;
+              padding-bottom: 1.5rem;
+              border-bottom: 1px solid var(--border);
+            }
+
+            .dark-mode .profile-preview {
+              border-bottom-color: #444;
+            }
+
+            .profile-preview img {
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+              object-fit: cover;
+              margin-bottom: 0.8rem;
+              border: 2px solid var(--highlight);
+            }
+
+            .profile-info h2 {
+              font-size: 1.1rem;
+              color: var(--highlight);
+              margin-bottom: 0.3rem;
+              font-weight: 600;
+            }
+
+            .profile-info p {
+              color: #666;
+              font-size: 0.85rem;
+            }
+
+            .dark-mode .profile-info p {
+              color: #aaa;
+            }
+
+            .nav-links {
+              margin-top: 1rem;
+            }
+
+            .nav-links a {
+              display: flex;
+              align-items: center;
+              padding: 0.7rem 1rem;
+              margin-bottom: 0.3rem;
+              text-decoration: none;
+              color: var(--light-text);
+              border-radius: 4px;
+              transition: all 0.2s;
+              font-size: 0.95rem;
+            }
+
+            .dark-mode .nav-links a {
+              color: var(--dark-text);
+            }
+
+            .nav-links a:hover {
+              background-color: var(--hover-bg);
+            }
+
+            .dark-mode .nav-links a:hover {
+              background-color: rgba(10, 102, 194, 0.2);
+            }
+
+            .nav-links a.active {
+              background-color: var(--highlight);
+              color: white;
+              font-weight: 500;
+            }
+
+            .nav-links a i {
+              margin-right: 0.8rem;
+              font-size: 1.1rem;
+            }
+
+            .content-area {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              gap: 1.5rem;
+            }
+
+            .post-job-form {
+              background-color: var(--card-bg);
+              padding: 1.5rem;
+              border-radius: 8px;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .dark-mode .post-job-form {
+              background-color: var(--dark-card-bg);
+            }
+
+            .post-job-form h2 {
+              color: var(--highlight);
+              margin-bottom: 1rem;
+              font-size: 1.2rem;
+              font-weight: 600;
+            }
+
+            .form-group {
+              margin-bottom: 1.5rem;
+            }
+
+            label {
+              display: block;
+              margin-bottom: 0.5rem;
+              font-weight: 500;
+              color: var(--highlight);
+            }
+
+            input,
+            select,
+            textarea {
+              width: 100%;
+              padding: 0.8rem;
+              border: 1px solid var(--border);
+              border-radius: 4px;
+              background-color: var(--card-bg);
+              color: var(--light-text);
+              transition: border-color 0.2s;
+            }
+
+            .dark-mode input,
+            .dark-mode select,
+            .dark-mode textarea {
+              background-color: var(--dark-card-bg);
+              color: var(--dark-text);
+              border-color: #444;
+            }
+
+            input:focus,
+            select:focus,
+            textarea:focus {
+              outline: none;
+              border-color: var(--highlight);
+            }
+
+            .btn {
+              display: block;
+              width: 100%;
+              padding: 0.8rem;
+              border-radius: 4px;
+              border: none;
+              font-weight: 500;
+              cursor: pointer;
+              transition: background-color 0.2s;
+              text-align: center;
+            }
+
+            .btn-primary {
+              background-color: var(--highlight);
+              color: white;
+            }
+
+            .btn-primary:hover {
+              background-color: var(--primary-dark);
+            }
+
+            .posted-jobs {
+              background-color: var(--card-bg);
+              padding: 1.5rem;
+              border-radius: 8px;
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .dark-mode .posted-jobs {
+              background-color: var(--dark-card-bg);
+            }
+
+            .posted-jobs h2 {
+              color: var(--highlight);
+              margin-bottom: 1rem;
+              font-size: 1.2rem;
+              font-weight: 600;
+            }
+
+            .job-list {
+              display: flex;
+              flex-direction: column;
+              gap: 1rem;
+            }
+
+            .job-card {
+              padding: 1rem;
+              border: 1px solid var(--border);
+              border-radius: 8px;
+              transition: all 0.2s;
+            }
+
+            .dark-mode .job-card {
+              border-color: #444;
+            }
+
+            .job-card:hover {
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .job-card h3 {
+              color: var(--highlight);
+              margin-bottom: 0.5rem;
+              font-size: 1.1rem;
+            }
+
+            .job-meta {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 1rem;
+              margin-bottom: 0.5rem;
+              font-size: 0.9rem;
+            }
+
+            .job-meta span {
+              display: flex;
+              align-items: center;
+            }
+
+            .job-actions {
+              display: flex;
+              gap: 0.5rem;
+              margin-top: 0.5rem;
+            }
+
+            .job-actions button {
+              padding: 0.5rem 1rem;
+              border-radius: 4px;
+              border: none;
+              cursor: pointer;
+              font-size: 0.9rem;
+            }
+
+            .edit-btn {
+              background-color: var(--highlight);
+              color: white;
+            }
+
+            .delete-btn {
+              background-color: #e63946;
+              color: white;
+            }
+
+            .scrolling-text {
+              position: fixed;
+              bottom: 0;
+              width: 100%;
+              white-space: nowrap;
+              overflow: hidden;
+              background-color: var(--highlight);
+              color: white;
+              font-size: 0.9rem;
+              padding: 0.8rem;
+            }
+
+            .dark-mode .scrolling-text {
+              background-color: var(--dark-card-bg);
+              border-top: 1px solid #444;
+            }
+
+            .scrolling-text span {
+              display: inline-block;
+              padding-left: 100%;
+              animation: scroll-left 20s linear infinite;
+            }
+
+
+            .edit-btn {
+          background-color: var(--highlight);
+          color: white;
+          padding: 0.5rem 1rem;
+          border-radius: 4px;
+          text-decoration: none;
+          display: inline-block;
+          margin-right: 0.5rem;
+      }
+
+      .edit-btn:hover {
+          background-color: var(--primary-dark);
+          color: white;
+      }
+
+
+            @keyframes scroll-left {
+              0% {
+                transform: translateX(0%);
+              }
+              100% {
+                transform: translateX(-100%);
+              }
+            }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="AbilityHire_Logo.png" alt="AbilityHire Logo" />
+        <span>AbilityHire</span>
+      </div>
+      <div class="nav-buttons">
+        <button onclick="navigateTo('/about')" id="aboutBtn">About</button>
+        <span class="lang-toggle">
+          <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">
+            English
+          </button>
+          <button class="lang-btn" data-lang="ar" onclick="setLanguage('ar')">
+            عربي
+          </button>
+        </span>
+        <button class="emoji-toggle" onclick="toggleMode()">🌓</button>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <div class="sidebar">
+        <div class="profile-preview">
+          <img
+            src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&auto=format&fit=crop"
+            alt="Profile Picture"
+            id="profileImage"
+          />
+          <div class="profile-info">
+            <h2 id="profileName"></h2>
+            <p id="profileTitle"></p>
+          </div>
+        </div>
+        <div class="nav-links">
+          <a href="{{ url_for('views.publisher_dashboard') }}"
+            ><i>📊</i> <span id="dashboardLink">Dashboard</span></a
+          >
+          <a href="#" class="active"
+            ><i>📝</i> <span id="postJobsLink">Post Jobs</span></a
+          >
+          <a href="{{ url_for('views.setting') }}"
+            ><i>⚙️</i> <span id="settingsLink">Settings</span></a
+          >
+          <a href="{{ url_for('auth.logout') }}"
+            ><i>🚪</i> <span id="logoutLink">Logout</span></a
+          >
+        </div>
+      </div>
+
+      <div class="content-area">
+        <div class="post-job-form">
+          <h2 id="postJobTitle">Post New Job</h2>
+          <form method="POST" action="{{ url_for('views.postjobs') }}">
+            <div class="form-group">
+              <label for="status" id="statusLabel">Status</label>
+              <select id="status" name="status" required>
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="jobTitle" id="jobTitleLabel">Job Title</label>
+              <input type="text" id="jobTitle" name="jobTitle" required />
+            </div>
+
+            <div class="form-group">
+              <label for="jobDescription" id="descriptionLabel"
+                >Job Description</label
+              >
+              <textarea
+                id="jobDescription"
+                name="jobDescription"
+                rows="4"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="city" id="cityLabel">City</label>
+              <input type="text" id="city" name="city" required />
+            </div>
+
+            <div class="form-group">
+              <label for="salary" id="salaryLabel">Salary (USD)</label>
+              <input type="number" id="salary" name="salary" min="0" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="postJobBtn">
+              Post Job
+            </button>
+          </form>
+        </div>
+
+        <div class="posted-jobs">
+          <h2 id="postedJobsTitle">Your Posted Jobs</h2>
+          <div class="job-list">
+            {% if jobs %} {% for job in jobs %}
+            <div class="job-card">
+              <h3>{{ job.jobtitle }}</h3>
+              <div class="job-meta">
+                <span><strong>City:</strong> {{ job.city }}</span>
+                <span><strong>Salary:</strong> {{ job.salary }}</span>
+                <span><strong>Status:</strong> {{ job.status }}</span>
+                <span><strong>Posted:</strong> {{ job.postingdate }}</span>
+              </div>
+              <div class="job-actions">
+                <a
+                  href="{{ url_for('views.edit_job', job_id=job.jobID) }}"
+                  class="edit-btn"
+                  >Edit</a
+                >
+                <form
+                  action="{{ url_for('views.delete_job') }}"
+                  method="POST"
+                  style="display: inline"
+                >
+                  <input type="hidden" name="job_id" value="{{ job.jobID }}" />
+                  <button type="submit" class="delete-btn">Delete</button>
+                </form>
+              </div>
+            </div>
+            {% endfor %} {% else %}
+            <div class="no-jobs" id="noJobsMessage">No jobs posted yet</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrolling-text">
+      <span id="scrollQuotes"
+        >Diversity drives innovation. — Inclusive workplaces thrive. — Talent
+        comes in many forms. — Build a better workforce.</span
+      >
+    </div>
+
+    <script>
+      let currentLang = localStorage.getItem("abilityHireLang") || "en";
+      let currentMode = localStorage.getItem("abilityHireMode") || "light";
+
+      function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem("abilityHireLang", lang);
+        applyLanguage();
+      }
+
+      function toggleMode() {
+        document.body.classList.toggle("dark-mode");
+        currentMode = document.body.classList.contains("dark-mode")
+          ? "dark"
+          : "light";
+        localStorage.setItem("abilityHireMode", currentMode);
+      }
+
+      function navigateTo(page) {
+        window.location.href = `${page}?lang=${currentLang}&mode=${currentMode}`;
+      }
+
+      function applyLanguage() {
+        document.body.dir = currentLang === "ar" ? "rtl" : "ltr";
+        document.querySelectorAll(".lang-btn").forEach((btn) => {
+          btn.classList.toggle("selected", btn.dataset.lang === currentLang);
+        });
+
+        const userInfo = JSON.parse(localStorage.getItem("userInfo")) || {};
+        if (userInfo.firstName) {
+          document.getElementById("profileName").textContent = `${
+            userInfo.firstName
+          } ${userInfo.lastName || ""}`;
+        }
+
+        const translations = {
+          en: {
+            postJobTitle: "Post New Job",
+            jobTitleLabel: "Job Title",
+            companyLabel: "Company Name",
+            descriptionLabel: "Job Description",
+            jobTypeLabel: "Job Type",
+            locationLabel: "Location",
+            salaryLabel: "Salary",
+            experienceLabel: "Required Experience",
+            skillsLabel: "Required Skills",
+            postJobBtn: "Post Job",
+            postedJobsTitle: "Your Posted Jobs",
+            fullTimeOption: "Full-time",
+            partTimeOption: "Part-time",
+            contractOption: "Contract",
+            internshipOption: "Internship",
+            remoteOption: "Remote",
+            entryOption: "Entry Level",
+            midOption: "Mid Level (2-5 years)",
+            seniorOption: "Senior Level (5+ years)",
+            noJobsMessage: "No jobs posted yet",
+            dashboardLink: "Dashboard",
+            postJobsLink: "Post Jobs",
+            candidatesLink: "Candidates",
+            profileLink: "Profile",
+            settingsLink: "Settings",
+            logoutLink: "Logout",
+            aboutBtn: "About",
+            scrollQuotes:
+              "Diversity drives innovation. — Inclusive workplaces thrive. — Talent comes in many forms. — Build a better workforce.",
+          },
+          ar: {
+            postJobTitle: "نشر وظيفة جديدة",
+            jobTitleLabel: "المسمى الوظيفي",
+            companyLabel: "اسم الشركة",
+            descriptionLabel: "وصف الوظيفة",
+            jobTypeLabel: "نوع الوظيفة",
+            locationLabel: "الموقع",
+            salaryLabel: "الراتب",
+            experienceLabel: "الخبرة المطلوبة",
+            skillsLabel: "المهارات المطلوبة",
+            postJobBtn: "نشر الوظيفة",
+            postedJobsTitle: "الوظائف المنشورة",
+            fullTimeOption: "دوام كامل",
+            partTimeOption: "دوام جزئي",
+            contractOption: "عقد",
+            internshipOption: "تدريب",
+            remoteOption: "عن بُعد",
+            entryOption: "مبتدئ",
+            midOption: "متوسط (2-5 سنوات)",
+            seniorOption: "خبير (5+ سنوات)",
+            noJobsMessage: "لا توجد وظائف منشورة بعد",
+            dashboardLink: "لوحة التحكم",
+            postJobsLink: "نشر الوظائف",
+            candidatesLink: "المتقدمين",
+            profileLink: "الملف الشخصي",
+            settingsLink: "الإعدادات",
+            logoutLink: "تسجيل الخروج",
+            aboutBtn: "حول",
+            scrollQuotes:
+              "التنوع يقود الابتكار. — بيئات العمل الشاملة تزدهر. — الموهبة تأتي بأشكال عديدة. — بناء قوة عاملة أفضل.",
+          },
+        };
+
+        const t = translations[currentLang];
+        Object.keys(t).forEach((key) => {
+          const element = document.getElementById(key);
+          if (element) element.textContent = t[key];
+        });
+      }
+
+      // This function will be replaced with actual API calls to your backend
+      function loadPostedJobs() {
+        // This is a placeholder - replace with actual API call
+        const jobs = []; // Will be populated from database
+
+        const jobList = document.getElementById("jobList");
+        const noJobsMessage = document.getElementById("noJobsMessage");
+
+        if (jobs.length === 0) {
+          noJobsMessage.style.display = "block";
+          return;
+        }
+
+        noJobsMessage.style.display = "none";
+
+        jobs.forEach((job) => {
+          const jobCard = document.createElement("div");
+          jobCard.className = "job-card";
+          jobCard.innerHTML = `
+          <h3>${job.title}</h3>
+          <div class="job-meta">
+            <span>${job.company}</span>
+            <span>${job.location}</span>
+            <span>${job.salary}</span>
+            <span>${job.type}</span>
+          </div>
+          <p>${job.description.substring(0, 100)}...</p>
+          <div class="job-actions">
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </div>
+        `;
+          jobList.appendChild(jobCard);
+        });
+      }
+
+      window.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLang = urlParams.get("lang");
+        const urlMode = urlParams.get("mode");
+
+        if (urlLang) {
+          currentLang = urlLang;
+          localStorage.setItem("abilityHireLang", currentLang);
+        }
+        if (urlMode) {
+          currentMode = urlMode;
+          localStorage.setItem("abilityHireMode", currentMode);
+          if (currentMode === "dark") document.body.classList.add("dark-mode");
+        }
+
+        applyLanguage();
+        loadPostedJobs();
+      });
+    </script>
+  </body>
+</html>

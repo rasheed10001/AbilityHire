@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AbilityHire - Welcome</title>
+  <style>
+    input, select, textarea, button {
+        font-size: calc(var(--base-font-size) - 2px);
+    }
+    :root {
+      --light-bg: #f4f4f4;
+      --dark-bg: #1c1c1c;
+      --light-text: #111;
+      --dark-text: #f0f0f0;
+      --highlight: #005a9c;
+      --lang-selected: #004080;
+      --global-font-size: {{ global_font_size }};
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: var(--global-font-size);
+      background-color: var(--light-bg);
+      color: var(--light-text);
+      transition: background-color 0.3s, color 0.3s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5em 2em;
+      background-color: var(--highlight);
+      color: white;
+      font-size: 1.1em;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .nav-buttons button,
+    .lang-toggle button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1em;
+      margin-left: 1em;
+      cursor: pointer;
+      padding: 0.3em 0.6em;
+      border-radius: 5px;
+    }
+
+    .lang-toggle button.selected {
+      background-color: var(--lang-selected);
+    }
+
+    .emoji-toggle {
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      margin-left: 1em;
+    }
+
+    main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3em;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .motivation-image img {
+      width: 400px;
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .welcome-text {
+      flex: 1;
+      margin-left: 2em;
+      min-width: 300px;
+    }
+
+    .welcome-text h1 {
+      font-size: 2.2em;
+      margin-bottom: 0.5em;
+      color: var(--highlight);
+    }
+
+    .scrolling-text {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      background-color: var(--highlight);
+      color: white;
+      font-size: 1.2em;
+      padding: 0.5em;
+    }
+
+    .scrolling-text span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll-left 20s linear infinite;
+    }
+
+    @keyframes scroll-left {
+      0% { transform: translateX(0%); opacity: 1; }
+      100% { transform: translateX(-100%); opacity: 0.3; }
+    }
+
+    .dark-mode {
+      background-color: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
+    .dark-mode header {
+      background-color: #2d2d2d;
+    }
+
+    .dark-mode .scrolling-text {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="AbilityHire_Logo.png" alt="AbilityHire Logo">
+      <span>AbilityHire</span>
+    </div>
+    <div class="nav-buttons">
+      <button onclick="navigateTo('/about')" id="aboutBtn">About</button>
+      <button onclick="navigateTo('/login')" id="signinBtn">Sign In</button>
+      <button onclick="navigateTo('/signup')" id="signupBtn">Sign Up</button>
+      <span class="lang-toggle">
+        <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">English</button>
+        <button class="lang-btn" data-lang="ar" onclick="setLanguage('ar')">عربي</button>
+      </span>
+      <button class="emoji-toggle" onclick="toggleMode()">🌓</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="motivation-image">
+      <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&auto=format&fit=crop" alt="Diverse team working together">
+    </div>
+    <div class="welcome-text">
+      <h1 id="welcomeTitle">Welcome to AbilityHire</h1>
+      <p id="welcomeMsg">
+        Dedicated to connecting individuals with disabilities to inclusive job opportunities.
+        Join us in building a workforce where everyone belongs and thrives.
+      </p>
+    </div>
+  </main>
+
+  <div class="scrolling-text">
+    <span id="scrollQuotes">
+      Believe in yourself and all that you are. — Every challenge is an opportunity to grow. — Your potential is endless. — Together, we build a more inclusive future.
+    </span>
+  </div>
+
+  <script>
+    let currentLang = localStorage.getItem('abilityHireLang') || 'en';
+    let currentMode = localStorage.getItem('abilityHireMode') || 'light';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('abilityHireLang', lang);
+      applyLanguage();
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+      currentMode = document.body.classList.contains("dark-mode") ? "dark" : "light";
+      localStorage.setItem('abilityHireMode', currentMode);
+    }
+
+    function navigateTo(page) {
+      window.location.href = `${page}?lang=${currentLang}&mode=${currentMode}`;
+    }
+
+    function applyLanguage() {
+      document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('selected', btn.dataset.lang === currentLang);
+      });
+
+      const translations = {
+        en: {
+          welcomeTitle: "Welcome to AbilityHire",
+          welcomeMsg: "Dedicated to connecting individuals with disabilities to inclusive job opportunities. Join us in building a workforce where everyone belongs and thrives.",
+          scrollQuotes: "Believe in yourself and all that you are. — Every challenge is an opportunity to grow. — Your potential is endless. — Together, we build a more inclusive future.",
+          aboutBtn: "About",
+          signinBtn: "Sign In",
+          signupBtn: "Sign Up"
+        },
+        ar: {
+          welcomeTitle: "أهلاً بك في AbilityHire",
+          welcomeMsg: "موقع مخصص لربط ذوي الإعاقة بفرص عمل شاملة. انضم إلينا لبناء قوة عاملة حيث يشعر الجميع بالانتماء والنجاح.",
+          scrollQuotes: "آمن بنفسك وبكل ما أنت عليه. — كل تحد هو فرصة للنمو. — إمكانياتك لا حدود لها. — معًا نبني مستقبلًا أكثر شمولًا.",
+          aboutBtn: "حول",
+          signinBtn: "تسجيل الدخول",
+          signupBtn: "إنشاء حساب"
+        }
+      };
+
+      const t = translations[currentLang];
+      Object.keys(t).forEach(key => {
+        const element = document.getElementById(key);
+        if (element) element.textContent = t[key];
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlLang = urlParams.get('lang');
+      const urlMode = urlParams.get('mode');
+      
+      if (urlLang) {
+        currentLang = urlLang;
+        localStorage.setItem('abilityHireLang', currentLang);
+      }
+      if (urlMode) {
+        currentMode = urlMode;
+        localStorage.setItem('abilityHireMode', currentMode);
+        if (currentMode === 'dark') document.body.classList.add('dark-mode');
+      }
+      
+      applyLanguage();
+    });
+  </script>
+</body>
+</html>

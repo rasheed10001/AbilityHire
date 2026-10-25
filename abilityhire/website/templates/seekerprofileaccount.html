@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Account - AbilityHire</title>
+    <style>
+          :root {
+            --light-bg: #f5f7fa;
+            --dark-bg: #1d2226;
+            --light-text: #1d2226;
+            --dark-text: #e1e9ee;
+            --highlight: #0a66c2;
+            --lang-selected: #004182;
+            --primary: #0a66c2;
+            --primary-dark: #004182;
+            --border: #e6e9ec;
+            --card-bg: #ffffff;
+            --dark-card-bg: #2d3a44;
+            --hover-bg: rgba(152, 216, 244, 0.25);
+            --global-font-size: {{ global_font_size }};
+          }
+
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: var(--global-font-size);
+            background-color: var(--light-bg);
+            color: var(--light-text);
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+          }
+
+          .dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+          }
+
+          header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8em 2em;
+            background-color: var(--highlight);
+            color: white;
+            font-size: 1.1em;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          }
+
+          .dark-mode header {
+            background-color: var(--dark-bg);
+            border-bottom: 1px solid #333;
+          }
+
+          .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5em;
+            font-weight: bold;
+          }
+
+          .logo img {
+            height: 36px;
+            margin-right: 10px;
+          }
+
+          .nav-buttons button,
+          .lang-toggle button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 0.95em;
+            margin-left: 1em;
+            cursor: pointer;
+            padding: 0.5em 1em;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+          }
+
+          .nav-buttons button:hover,
+          .lang-toggle button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+          }
+
+          .lang-toggle button.selected {
+            background-color: var(--lang-selected);
+          }
+
+          .emoji-toggle {
+            background: none;
+            border: none;
+            font-size: 1.3em;
+            cursor: pointer;
+            margin-left: 1em;
+            color: white;
+          }
+
+          .main-container {
+            display: flex;
+            padding: 1.5em;
+            flex: 1;
+            gap: 1.5em;
+          }
+
+          .sidebar {
+            width: 260px;
+            background-color: var(--card-bg);
+            padding: 1.5em;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+          }
+
+          .dark-mode .sidebar {
+            background-color: var(--dark-card-bg);
+          }
+
+          .profile-preview {
+            text-align: center;
+            margin-bottom: 1.5em;
+            padding-bottom: 1.5em;
+            border-bottom: 1px solid var(--border);
+          }
+
+          .dark-mode .profile-preview {
+            border-bottom-color: #444;
+          }
+
+          .profile-preview img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 0.8em;
+            border: 2px solid var(--highlight);
+          }
+
+          .profile-info h2 {
+            font-size: 1.1em;
+            color: var(--highlight);
+            margin-bottom: 0.3em;
+            font-weight: 600;
+          }
+
+          .profile-info p {
+            color: #666;
+            font-size: 0.85em;
+          }
+
+          .dark-mode .profile-info p {
+            color: #aaa;
+          }
+
+          .nav-links {
+            margin-top: 1em;
+          }
+
+          .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 0.7em 1em;
+            margin-bottom: 0.3em;
+            text-decoration: none;
+            color: var(--light-text);
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-size: 0.95em;
+          }
+
+          .dark-mode .nav-links a {
+            color: var(--dark-text);
+          }
+
+          .nav-links a:hover {
+            background-color: var(--hover-bg);
+          }
+
+          .dark-mode .nav-links a:hover {
+            background-color: rgba(10, 102, 194, 0.2);
+          }
+
+          .nav-links a.active {
+            background-color: var(--highlight);
+            color: white;
+            font-weight: 500;
+          }
+
+          .nav-links a i {
+            margin-right: 0.8em;
+            font-size: 1.1em;
+          }
+
+          .profile-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5em;
+          }
+
+          .profile-section {
+            background-color: var(--card-bg);
+            padding: 1.5em;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+          }
+
+          .dark-mode .profile-section {
+            background-color: var(--dark-card-bg);
+          }
+
+          .profile-section h1 {
+            color: var(--highlight);
+            margin-bottom: 1em;
+            font-size: 1.5em;
+            font-weight: 600;
+          }
+
+          .profile-field {
+            margin-bottom: 1em;
+            padding-bottom: 1em;
+            border-bottom: 1px solid var(--border);
+          }
+
+          .dark-mode .profile-field {
+            border-bottom-color: #444;
+          }
+
+          .profile-field:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+          }
+
+          .profile-field strong {
+            display: block;
+            margin-bottom: 0.3em;
+            color: var(--highlight);
+            font-size: 0.95em;
+          }
+
+          .profile-field span {
+            font-size: 1em;
+          }
+
+          .linkedin-link {
+            color: var(--highlight);
+            text-decoration: none;
+          }
+
+          .linkedin-link:hover {
+            text-decoration: underline;
+          }
+
+          .linkedin-badge {
+            display: inline-block;
+            background-color: #0077b5;
+            color: white;
+            padding: 0.3em 0.6em;
+            border-radius: 4px;
+            margin-left: 0.5em;
+            font-size: 0.75em;
+            font-weight: 500;
+          }
+
+          .profile-completion {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 1em 0 2em;
+            overflow: hidden;
+          }
+
+          .dark-mode .profile-completion {
+            background-color: #333;
+          }
+
+      .completion-bar {
+          height: 20px;
+          background: linear-gradient(90deg, var(--highlight), var(--primary-dark));
+          border-radius: 10px;
+          text-align: center;
+          color: white;
+          font-size: 0.75em;
+          font-weight: 500;
+          line-height: 20px;
+          transition: width 0.5s ease;
+          width: 0%;
+      }
+          .edit-profile-btn {
+            background-color: var(--highlight);
+            color: white;
+            border: none;
+            padding: 0.8em 1.5em;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.95em;
+            font-weight: 500;
+            margin-top: 1em;
+            width: 100%;
+          }
+
+          .edit-profile-btn:hover {
+            background-color: var(--primary-dark);
+          }
+
+          .requirements {
+            margin-top: 1.5em;
+          }
+
+          .requirements h2 {
+            color: var(--highlight);
+            margin-bottom: 1em;
+            font-size: 1.2em;
+            font-weight: 600;
+          }
+
+          .requirements ul {
+            padding-left: 1.5em;
+          }
+
+          .requirements li {
+            margin-bottom: 0.8em;
+            font-size: 0.95em;
+            color: #666;
+          }
+
+          .dark-mode .requirements li {
+            color: #aaa;
+          }
+
+          .scrolling-text {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            background-color: var(--highlight);
+            color: white;
+            font-size: 0.9em;
+            padding: 0.8em;
+            z-index: 90;
+          }
+
+          .dark-mode .scrolling-text {
+            background-color: var(--dark-card-bg);
+            border-top: 1px solid #444;
+          }
+
+          .scrolling-text span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: scroll-left 20s linear infinite;
+          }
+
+          @keyframes scroll-left {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-100%); }
+          }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="AbilityHire_Logo.png" alt="AbilityHire Logo" />
+        <span>AbilityHire</span>
+      </div>
+      <div class="nav-buttons">
+        <button onclick="history.back();" id="dashboardBtn">Dashboard</button>
+        <span class="lang-toggle">
+          <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">
+            English
+          </button>
+          <button class="lang-btn" data-lang="ar" onclick="setLanguage('ar')">
+            عربي
+          </button>
+        </span>
+        <button class="emoji-toggle" onclick="toggleMode()">🌓</button>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <div class="sidebar">
+        <div class="profile-preview">
+          <img
+            src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=800&auto=format&fit=crop"
+            alt="Profile Picture"
+            id="profileImage"
+          />
+          <div class="profile-info">
+            <h2 id="profileName"></h2>
+            <p id="profileTitle">{{ user }}</p>
+          </div>
+        </div>
+        <div class="nav-links">
+          <a href="{{ url_for('views.seekerdashboard') }}"
+            ><i>📊</i> <span id="dashboardLink">Dashboard</span></a
+          >
+          <a href="{{ url_for('views.searchjob') }}"
+            ><i>🔍</i> <span id="findJobsLink">Find Jobs</span></a
+          >
+          <a href="#" class="active"
+            ><i>👤</i> <span id="profileLink">Profile</span></a
+          >
+          <a href="{{ url_for('auth.logout') }}"
+            ><i>🚪</i> <span id="logoutLink">Logout</span></a
+          >
+        </div>
+      </div>
+
+      <div class="profile-content">
+        <div class="profile-section">
+          <h1 id="profileTitle">Your Profile</h1>
+          <div class="profile-completion">
+            <div class="completion-bar" id="completionBar">75% Complete</div>
+          </div>
+
+          <div class="profile-field">
+            <strong id="firstNameLabel">First Name</strong>
+            <span id="firstName">{{ fname }}</span>
+          </div>
+
+          <div class="profile-field">
+            <strong id="lastNameLabel">Last Name</strong>
+            <span id="lastName">{{ lname }}</span>
+          </div>
+
+          <div class="profile-field">
+            <strong id="emailLabel">Email</strong>
+            <span id="email">{{ email }}</span>
+          </div>
+
+          <div class="profile-field">
+            <strong id="phoneLabel">Phone</strong>
+            <span id="phone">{{ phone }}</span>
+          </div>
+
+          <div class="profile-field">
+            <strong id="genderLabel">Gender</strong>
+            <span id="gender">{{ gender }}</span>
+          </div>
+
+          <div class="profile-field">
+            <strong id="cityLabel">City</strong>
+            <span id="city">{{ city }}</span>
+          </div>
+
+          <div class="profile-field">
+            <strong id="documentLabel">Disability Document</strong>
+            <span id="document"
+              >{% if disabilitydoc %}
+              <img
+                src="data:image/jpeg;base64,{{ disabilitydoc }}"
+                alt="Uploaded Document"
+              />
+              {% else %}
+              <p>No document available</p>
+              {% endif %}
+            </span>
+          </div>
+
+          <button
+            class="edit-profile-btn"
+            onclick="navigateTo('/editprofile')"
+            id="editProfileBtn"
+          >
+            ✏️ Edit Profile
+          </button>
+        </div>
+
+        <div class="profile-section requirements">
+          <h2 id="requirementsTitle">Profile Requirements</h2>
+          <ul>
+            <li id="req1">Complete all personal information fields</li>
+            <li id="req2">Add a professional profile picture</li>
+            <li id="req3">
+              Verify your LinkedIn profile (required for job applications)
+            </li>
+            <li id="req4">Upload disability documentation (PDF or image)</li>
+            <li id="req5">Keep your contact information up to date</li>
+            <li id="req6">Complete your skills section</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrolling-text">
+      <span id="scrollQuotes">
+        Your abilities define you. — Focus on what you can do. — The right
+        opportunity is waiting. — Success starts here.
+      </span>
+    </div>
+
+    <script>
+      let currentLang = localStorage.getItem("abilityHireLang") || "en";
+      let currentMode = localStorage.getItem("abilityHireMode") || "light";
+
+      function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem("abilityHireLang", lang);
+        applyLanguage();
+        calculateCompletion();
+      }
+
+      function toggleMode() {
+        document.body.classList.toggle("dark-mode");
+        currentMode = document.body.classList.contains("dark-mode")
+          ? "dark"
+          : "light";
+        localStorage.setItem("abilityHireMode", currentMode);
+      }
+
+      function navigateTo(page) {
+        window.location.href = `${page}?lang=${currentLang}&mode=${currentMode}`;
+      }
+
+      function calculateCompletion() {
+        const fieldsToCheck = [
+          "firstName",
+          "lastName",
+          "email",
+          "phone",
+          "gender",
+          "city",
+          "document",
+        ];
+
+        let completedFields = 0;
+
+        fieldsToCheck.forEach((field) => {
+          const element = document.getElementById(field);
+          if (element) {
+            if (field === "document") {
+              const content = element.innerHTML.trim();
+              if (content && !content.includes("No document available")) {
+                completedFields++;
+              }
+            } else {
+              const value = element.textContent.trim();
+              if (value && value !== "None") completedFields++;
+            }
+          }
+        });
+
+        const totalFields = fieldsToCheck.length;
+        const completionPercentage = Math.round(
+          (completedFields / totalFields) * 100
+        );
+
+        const completionBar = document.getElementById("completionBar");
+        if (completionBar) {
+          completionBar.style.width = `${completionPercentage}%`;
+          completionBar.textContent = `${completionPercentage}% Complete`;
+
+          if (completionPercentage >= 80) {
+            completionBar.style.background =
+              "linear-gradient(90deg, #4CAF50, #2E7D32)";
+          } else if (completionPercentage >= 50) {
+            completionBar.style.background =
+              "linear-gradient(90deg, #FFC107, #FF9800)";
+          } else {
+            completionBar.style.background =
+              "linear-gradient(90deg, #F44336, #D32F2F)";
+          }
+        }
+      }
+
+      function applyLanguage() {
+        document.body.dir = currentLang === "ar" ? "rtl" : "ltr";
+        document.querySelectorAll(".lang-btn").forEach((btn) => {
+          btn.classList.toggle("selected", btn.dataset.lang === currentLang);
+        });
+        const firstName = document
+          .getElementById("firstName")
+          .textContent.trim();
+        const lastName = document.getElementById("lastName").textContent.trim();
+        if (firstName && firstName !== "None") {
+          document.getElementById(
+            "profileName"
+          ).textContent = `${firstName} ${lastName}`;
+        }
+
+        const translations = {
+          en: {
+            dashboardBtn: "Dashboard",
+            profileTitle: "Your Profile",
+            firstNameLabel: "First Name",
+            lastNameLabel: "Last Name",
+            emailLabel: "Email",
+            phoneLabel: "Phone",
+            genderLabel: "Gender",
+            cityLabel: "City",
+            linkedinLabel: "LinkedIn",
+            documentLabel: "Disability Document",
+            editProfileBtn: "✏️ Edit Profile",
+            requirementsTitle: "Profile Requirements",
+            req1: "Complete all personal information fields",
+            req2: "Add a professional profile picture",
+            req3: "Verify your LinkedIn profile (required for job applications)",
+            req4: "Upload disability documentation (PDF or image)",
+            req5: "Keep your contact information up to date",
+            req6: "Complete your skills section",
+            dashboardLink: "Dashboard",
+            findJobsLink: "Find Jobs",
+            applicationsLink: "Applications",
+            profileLink: "Profile",
+            logoutLink: "Logout",
+            scrollQuotes:
+              "Your abilities define you. — Focus on what you can do. — The right opportunity is waiting. — Success starts here.",
+          },
+          ar: {
+            dashboardBtn: "لوحة التحكم",
+            profileTitle: "ملفك الشخصي",
+            firstNameLabel: "الاسم الأول",
+            lastNameLabel: "الاسم الأخير",
+            emailLabel: "البريد الإلكتروني",
+            phoneLabel: "الهاتف",
+            genderLabel: "الجنس",
+            cityLabel: "المدينة",
+            linkedinLabel: "لينكدإن",
+            documentLabel: "وثيقة الإعاقة",
+            editProfileBtn: "✏️ تعديل الملف",
+            requirementsTitle: "متطلبات الملف الشخصي",
+            req1: "أكمل جميع حقول المعلومات الشخصية",
+            req2: "أضف صورة شخصية احترافية",
+            req3: "تحقق من ملف لينكدإن الخاص بك (مطلوب للتقدم للوظائف)",
+            req4: "قم بتحميل وثيقة الإعاقة (PDF أو صورة)",
+            req5: "حافظ على تحديث معلومات الاتصال الخاصة بك",
+            req6: "أكمل قسم المهارات الخاص بك",
+            dashboardLink: "لوحة التحكم",
+            findJobsLink: "البحث عن وظائف",
+            applicationsLink: "التقديمات",
+            profileLink: "الملف الشخصي",
+            logoutLink: "تسجيل الخروج",
+            scrollQuotes:
+              "قدراتك تحددك. — ركز على ما يمكنك فعله. — الفرصة المناسبة تنتظرك. — النجاح يبدأ هنا.",
+          },
+        };
+
+        const t = translations[currentLang];
+        Object.keys(t).forEach((key) => {
+          const element = document.getElementById(key);
+          if (element) element.textContent = t[key];
+        });
+      }
+
+      window.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLang = urlParams.get("lang");
+        const urlMode = urlParams.get("mode");
+
+        if (urlLang) {
+          currentLang = urlLang;
+          localStorage.setItem("abilityHireLang", currentLang);
+        }
+        if (urlMode) {
+          currentMode = urlMode;
+          localStorage.setItem("abilityHireMode", currentMode);
+          if (currentMode === "dark") document.body.classList.add("dark-mode");
+        }
+
+        applyLanguage();
+        calculateCompletion();
+      });
+    </script>
+  </body>
+</html>

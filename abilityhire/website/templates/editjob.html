@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Job - AbilityHire</title>
+  <style>
+    :root {
+      --light-bg: #f5f7fa;
+      --dark-bg: #1d2226;
+      --light-text: #1d2226;
+      --dark-text: #e1e9ee;
+      --highlight: #0a66c2;
+      --lang-selected: #004182;
+      --primary: #0a66c2;
+      --primary-dark: #004182;
+      --border: #e6e9ec;
+      --card-bg: #ffffff;
+      --dark-card-bg: #2d3a44;
+      --hover-bg: rgba(152, 216, 244, 0.25);
+      --global-font-size: {{ global_font_size }};
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      background-color: var(--light-bg);
+      font-size: var(--global-font-size);
+      color: var(--light-text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .dark-mode {
+      background-color: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: var(--highlight);
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .dark-mode header {
+      background-color: var(--dark-bg);
+      border-bottom: 1px solid #333;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .logo img {
+      height: 30px;
+      margin-right: 10px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-buttons button {
+      background: none;
+      border: none;
+      color: white;
+      margin-left: 1rem;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+
+    .nav-buttons button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .emoji-toggle {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      margin-left: 1rem;
+      color: white;
+    }
+
+    .main-container {
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    .job-form {
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
+    }
+
+    .dark-mode .job-form {
+      background-color: var(--dark-card-bg);
+    }
+
+    h1 {
+      color: var(--highlight);
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--highlight);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background-color: var(--card-bg);
+      color: var(--light-text);
+      transition: border-color 0.2s;
+    }
+
+    .dark-mode input,
+    .dark-mode select,
+    .dark-mode textarea {
+      background-color: var(--dark-card-bg);
+      color: var(--dark-text);
+      border-color: #444;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--highlight);
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 4px;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 0.5rem;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--highlight);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background-color: #e0e0e0;
+      color: var(--light-text);
+    }
+
+    .btn-secondary:hover {
+      background-color: #d0d0d0;
+    }
+
+    .dark-mode .btn-secondary {
+      background-color: #444;
+      color: var(--dark-text);
+    }
+
+    .dark-mode .btn-secondary:hover {
+      background-color: #555;
+    }
+
+    .scrolling-text {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      background-color: var(--highlight);
+      color: white;
+      padding: 0.8rem;
+      font-size: 0.9rem;
+    }
+
+    .dark-mode .scrolling-text {
+      background-color: var(--dark-card-bg);
+      border-top: 1px solid #444;
+    }
+
+    .scrolling-text span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll-left 20s linear infinite;
+    }
+
+    @keyframes scroll-left {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-100%); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="AbilityHire_Logo.png" alt="AbilityHire Logo">
+      <span>AbilityHire</span>
+    </div>
+    <div class="nav-buttons">
+      <button class="emoji-toggle" onclick="toggleMode()">🌓</button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <div class="job-form">
+      <h1>Edit Job Posting</h1>
+      
+      <form method="POST" action="{{ url_for('views.edit_job', job_id=job.JobID) }}">
+      <div class="form-group">
+          <label for="jobTitle">Job Title</label>
+          <input type="text" id="jobTitle" name="jobTitle" value="{{ job.JobTitle }}" required>
+      </div>
+
+    <div class="form-group">
+        <label for="jobDescription">Job Description</label>
+        <textarea id="jobDescription" name="jobDescription" rows="6" required>{{ job.JobDescription }}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" value="{{ job.City }}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="salary">Salary (USD)</label>
+        <input type="number" id="salary" name="salary" value="{{ job.Salary }}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" name="status" required>
+            <option value="Open" {% if job.status == 'Open' %}selected{% endif %}>Open</option>
+            <option value="Closed" {% if job.status == 'Closed' %}selected{% endif %}>Closed</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="PostingDate">Posting Date</label>
+        <input type="date" id="PostingDate" name="PostingDate" value="{{ job.PostingDate }}" readonly>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Job</button>
+    </form>
+    </div>
+
+    <button class="btn btn-secondary" onclick="history.back();">Back to Jobs</button>
+  </div>
+
+  <div class="scrolling-text">
+    <span>Your abilities define you. — Focus on what you can do. — The right opportunity is waiting. — Success starts here.</span>
+  </div>
+
+  <script>
+    let currentMode = localStorage.getItem('abilityHireMode') || 'light';
+
+    // Apply saved mode on page load
+    if (currentMode === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+      currentMode = document.body.classList.contains("dark-mode") ? "dark" : "light";
+      localStorage.setItem('abilityHireMode', currentMode);
+    }
+
+    document.getElementById('salary').addEventListener('focus', function(e) {
+      this.value = this.value.replace(/,/g, '');
+    });
+  </script>
+</body>
+</html>
